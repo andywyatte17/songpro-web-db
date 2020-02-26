@@ -1,7 +1,13 @@
 <!doctype html>
+<head>
+<style>
+pre { font-family: Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace; }
+body { font-family: Verdana, Geneva, sans-serif; }
+</style>
+
 <title>{{ chorus.Title }}</title>
 
-<body>
+<body style="">
     <h1>{{ chorus.Title }}</h1>
     <h2>Verse</h2>
     <div>

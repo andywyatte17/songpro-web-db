@@ -1,11 +1,11 @@
 <!doctype html>
 <title>SongProDB</title>
+
 <body>
+    <h1>SongProDB</h1>
+    {% for url in urls %}
     <div>
-        <h1>SongProDB</h1>
-        <div>
-            {% for url in urls %}
-            <a href="{{ url.url }}">{{ url.text }}</a>
-            {% endfor %}
-        </div>
+        <a href="{{ url.url }}">{{ url.text }}</a>
+    </div>
+    {% endfor %}
 </body>

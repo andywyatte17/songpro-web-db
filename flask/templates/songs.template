@@ -2,11 +2,10 @@
 <title>Songs</title>
 
 <body>
+    <h1>Songs</h1>
+    {% for song in songs %}
     <div>
-        <h1>Songs</h1>
-        <div>
-            {% for song in songs %}
-            <a href="/songs/{{ song.index }}">{{ song.name }}</div>
-        {% endfor %}
+        <a href="/songs/{{ song.index }}">{{ song.name }}</a>
     </div>
+    {% endfor %}
 </body>

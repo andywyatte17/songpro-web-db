@@ -1,0 +1,16 @@
+<!doctype html>
+<title>{{ chorus.Title }}</title>
+
+<body>
+    <h1>{{ chorus.Title }}</h1>
+    <h2>Verse</h2>
+    <div>
+        <pre>{{ chorus.Verse1 }}</pre>
+    </div>
+    {% if chorus.Chorus!="" %}
+    <h2>Chorus</h2>
+    <div>
+        <pre>{{ chorus.Chorus }}</pre>
+    </div>
+    {% endif %}
+</body>

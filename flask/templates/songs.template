@@ -1,0 +1,12 @@
+<!doctype html>
+<title>Songs</title>
+
+<body>
+    <div>
+        <h1>Songs</h1>
+        <div>
+            {% for song in songs %}
+            <a href="/songs/{{ song.index }}">{{ song.name }}</div>
+        {% endfor %}
+    </div>
+</body>

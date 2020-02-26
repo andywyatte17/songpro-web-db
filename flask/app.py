@@ -15,17 +15,7 @@ def get_urls():
 
 @app.route("/")
 def root():
-    return flask.render_template_string("""<!doctype html>
-    <title>SongProDB</title>
-    <body>
-    <div>
-    <h1>SongProDB</h1>
-    <div>
-    {% for url in get_urls() %}
-        <a href="{{ url.url }}">{{ url.text }}</a>
-    {% endfor %}
-    </div>
-    </body>""", get_urls = get_urls)
+    return flask.render_template("root.template", urls = get_urls())
 
 @app.route("/songs")
 def songs():
@@ -38,14 +28,4 @@ def songs():
     for x in js:
         n += 1
         songs.append( songs_tuple(name=x["Title"], index=n) )
-    return flask.render_template_string("""<!doctype html>
-    <title>Songs</title>
-    <body>
-    <div>
-    <h1>Songs</h1>
-    <div>
-    {% for song in songs %}
-        <a href="/songs/{{ song.index }}">{{ song.name }}</div>
-    {% endfor %}
-    </div>
-    </body>""", songs = songs)
+    return flask.render_template("songs.template", songs = songs)

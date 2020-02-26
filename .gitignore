@@ -131,4 +131,5 @@ dmypy.json
 # SongPro database
 *.spdb
 *.csv*
+!csv/*.csv
 *.json*

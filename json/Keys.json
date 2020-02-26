@@ -1,0 +1,42 @@
+[
+  {
+    "Key": "A",
+    "Exclude": "0"
+  },
+  {
+    "Key": "B",
+    "Exclude": "0"
+  },
+  {
+    "Key": "Bb",
+    "Exclude": "0"
+  },
+  {
+    "Key": "C",
+    "Exclude": "0"
+  },
+  {
+    "Key": "D",
+    "Exclude": "0"
+  },
+  {
+    "Key": "Db",
+    "Exclude": "0"
+  },
+  {
+    "Key": "E",
+    "Exclude": "0"
+  },
+  {
+    "Key": "Eb",
+    "Exclude": "0"
+  },
+  {
+    "Key": "F",
+    "Exclude": "1"
+  },
+  {
+    "Key": "G",
+    "Exclude": "0"
+  }
+]

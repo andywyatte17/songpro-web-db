@@ -40,6 +40,24 @@ def GetChorusText(js, key):
     result = result.lstrip("\n")
     return result
 
+def InvertedDict(d):
+    result = {}
+    for key in d.keys():
+        value = d[key]
+        result[value] = key
+    return result
+
+SEQUENCE_LOOKUP = ( ('Chorus','C'), ('Verse1','1'), ('Verse2','2'), ('Verse3','3'), ('Verse4','4'), ('Verse5','5'), \
+                    ('Verse6','6'), ('Verse7','7'), ('Verse8','8'), ('Bridge','B'), )
+
+def ExtractSequence(chorus, SEQUENCE_LOOKUP):
+    result = ""
+    for key, seq in SEQUENCE_LOOKUP:
+        v = chorus.get(key, "")
+        if v!='':
+            result.append(seq)
+    return result
+
 @app.route("/songs/<song_id>")
 def song(song_id):
     import json
@@ -47,9 +65,30 @@ def song(song_id):
         js = json.load(f)
         js = sorted(js, key = lambda x: x.get("Title", ""))
     js = js[int(song_id)]
-    chorus_tuple = namedtuple("chorus_tuple", ["Title", "Verse1", "Chorus"])
-    chorus = chorus_tuple(Title = GetChorusText(js, "Title"),
-                          Verse1 = GetChorusText(js, "Verse1"),
-                          Chorus = GetChorusText(js, "Chorus"))
+    KEYS = js.keys()
+    KEYS_CUR = '''['Ref', 'Verse1', 'Verse2', 'Verse3', 'Verse4', 'Verse5', 'Verse6', 'Verse7', 'Verse8', 'Chorus', \
+            'Bridge', 'PreChorus', 'Chorus2', 'MidSection', 'Intro', 'Title', 'TitleX', 'Sequence', 'Music', \
+            'Font', 'Italic', 'Bold', 'FontSize', 'Outline', 'OneColour', 'Author', 'Copyright', 'BackColor', \
+            'ForeColor', 'FooterColor', 'Category', 'Plus', 'Key', 'Notes', 'SongBook', 'Mod', 'SoundView', \
+            'VideoView', 'View', 'BibleRef', 'BibleEndRef', 'BibleVersion', 'PowerPointFile', 'StartSlide', \
+            'EndSlide', 'TimedSlides', 'Continuous', 'PPDate', 'Liturgy', 'TypeRef', 'HashPosition', \
+            'HashSelected', 'Item', 'CCL', 'CCLSongID', 'DVDStartTime', 'DVDendtime', 'DVDid', 'Info', \
+            'DVDTitle', 'AutoTextFade', 'Mute']'''
+    print(KEYS)
+    for key in KEYS:
+        js[key] = rtf_to_text(js.get(key, ""))
+    if js["Sequence"]=='':
+        js["Sequence"] = ExtractSequence(js, SEQUENCE_LOOKUP)
+    chorus_tuple = namedtuple("chorus_tuple", KEYS)
+    chorus = chorus_tuple(**js)
     print(repr(chorus))
-    return flask.render_template("chorus.template", chorus = chorus)
+
+    section_tuple = namedtuple("section_tuple", ["name", "text"])
+    sections = []
+    for seqV in js["Sequence"]:
+        for key, seq in SEQUENCE_LOOKUP:
+            if seq==seqV:
+                sections = sections + [ section_tuple(name=key, text=js[key]) ]
+                continue
+
+    return flask.render_template("chorus.template", chorus = chorus, sections = sections)

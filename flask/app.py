@@ -3,11 +3,22 @@ import flask
 from collections import namedtuple
 import os
 from striprtf.striprtf import rtf_to_text
+import json
+
+# [START gae_python37_app]
 
 HERE = os.path.dirname(os.path.realpath(__file__))
 BASE_JSON = "Chorus.json" if (not "SONGPRO_CHORUS_JSON"  in os.environ) \
                           else os.environ["SONGPRO_CHORUS_JSON"]
 app = Flask(__name__)
+
+# ...
+
+loaded_json = None
+with open(os.path.join(HERE, "json", BASE_JSON), "rb") as f:
+    loaded_json = json.load(f)
+
+# ...
 
 def get_urls():
     url_tuple = namedtuple("urls", ["url", "text"])
@@ -22,10 +33,9 @@ def root():
 
 @app.route("/songs")
 def songs():
-    import json
-    with open(os.path.join(HERE, "..", "json", BASE_JSON), "rb") as f:
-        js = json.load(f)
-        js = sorted(js, key = lambda x: x.get("Title", ""))
+    global loaded_json
+    js = loaded_json[:]
+    js = sorted(js, key = lambda x: x.get("Title", ""))
     songs = []
     songs_tuple = namedtuple("songs", ["name", "index"])
     n = -1
@@ -60,10 +70,9 @@ def ExtractSequence(chorus, SEQUENCE_LOOKUP):
 
 @app.route("/songs/<song_id>")
 def song(song_id):
-    import json
-    with open(os.path.join(HERE, "..", "json", BASE_JSON), "rb") as f:
-        js = json.load(f)
-        js = sorted(js, key = lambda x: x.get("Title", ""))
+    global loaded_json
+    js = loaded_json[:]
+    js = sorted(js, key = lambda x: x.get("Title", ""))
     js = js[int(song_id)]
     KEYS = js.keys()
     KEYS_CUR = '''['Ref', 'Verse1', 'Verse2', 'Verse3', 'Verse4', 'Verse5', 'Verse6', 'Verse7', 'Verse8', 'Chorus', \
@@ -92,3 +101,11 @@ def song(song_id):
                 continue
 
     return flask.render_template("chorus.template", chorus = chorus, sections = sections)
+
+if __name__ == '__main__':
+    # This is used when running locally only. When deploying to Google App
+    # Engine, a webserver process such as Gunicorn will serve the app. This
+    # can be configured by adding an `entrypoint` to app.yaml.
+    app.run(host='127.0.0.1', port=8080, debug=True)
+
+# [END gae_python37_app]

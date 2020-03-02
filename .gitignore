@@ -132,5 +132,4 @@ dmypy.json
 *.spdb
 *.csv*
 !csv/*.csv
-*.json*
 !json/*.json

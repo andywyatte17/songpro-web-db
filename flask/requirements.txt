@@ -1,4 +1,4 @@
 #pip==20.0.2
 striprtf
 Flask==1.1.1
-gunicorn==19.3.0
+gunicorn==19.5.0

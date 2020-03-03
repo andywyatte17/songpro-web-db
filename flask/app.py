@@ -30,10 +30,14 @@ def get_urls():
 
 # ...
 
+def maybe_rtf_to_text(maybe_rtf):
+    return maybe_rtf if not maybe_rtf.startswith("{\\rtf1") \
+                else rtf_to_text(maybe_rtf).lstrip("\n").rstrip("\n")
+
 def TokensFromJson(json_item):
     parts = set() 
     for k in json_item.keys():
-        text = rtf_to_text(json_item[k])
+        text = maybe_rtf_to_text(json_item[k])
         text = text.replace(",", " ").replace(";", " ")
         text = text.replace(":", " ").replace("\n", " ")
         text = text.replace(".", " ").replace("!", " ")
@@ -69,9 +73,7 @@ def songs():
     return songs_n([x for x in range(len(js))])
 
 def GetChorusText(js, key):
-    result = rtf_to_text(js.get(key, ""))
-    result = result.rstrip("\n")
-    result = result.lstrip("\n")
+    result = maybe_rtf_to_text(js.get(key, ""))
     return result
 
 def InvertedDict(d):
@@ -118,14 +120,14 @@ def song(song_id):
             'EndSlide', 'TimedSlides', 'Continuous', 'PPDate', 'Liturgy', 'TypeRef', 'HashPosition', \
             'HashSelected', 'Item', 'CCL', 'CCLSongID', 'DVDStartTime', 'DVDendtime', 'DVDid', 'Info', \
             'DVDTitle', 'AutoTextFade', 'Mute']'''
-    print(KEYS)
+    #print(KEYS)
     for key in KEYS:
-        js[key] = rtf_to_text(js.get(key, ""))
+        js[key] = maybe_rtf_to_text(js.get(key, ""))
     if js["Sequence"]=='':
         js["Sequence"] = ExtractSequence(js, SEQUENCE_LOOKUP)
     chorus_tuple = namedtuple("chorus_tuple", KEYS)
     chorus = chorus_tuple(**js)
-    print(repr(chorus))
+    #print(repr(chorus))
 
     section_tuple = namedtuple("section_tuple", ["name", "text"])
     sections = []

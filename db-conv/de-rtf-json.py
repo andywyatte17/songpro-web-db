@@ -14,9 +14,9 @@ for i in range(len(js)):
         rtf = rtf.lstrip("\n").rstrip("\n")
         if original!="" and rtf=="":
             j[k] = ""
+        elif original!=rtf:
+            j[k] = rtf
     js[i] = j
 
 with open(sys.argv[1], "w") as f:
-    json.dump(js, f)
-
-
+    json.dump(js, f, indent=2)

@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import flask
 from collections import namedtuple
 import os
@@ -31,8 +31,8 @@ def get_urls():
 def root():
     return flask.render_template("root.template", urls = get_urls())
 
-@app.route("/songs")
-def songs():
+def songs_n(songs_int_list):
+    songs_int_list = set(songs_int_list)
     global loaded_json
     js = loaded_json[:]
     js = sorted(js, key = lambda x: x.get("Title", ""))
@@ -41,8 +41,16 @@ def songs():
     n = -1
     for x in js:
         n += 1
+        if not n in songs_int_list:
+            continue
         songs.append( songs_tuple(name=x["Title"], index=n) )
     return flask.render_template("songs.template", songs = songs)
+    
+@app.route("/songs")
+def songs():
+    global loaded_json
+    js = loaded_json[:]
+    return songs_n([x for x in range(len(js))])
 
 def GetChorusText(js, key):
     result = rtf_to_text(js.get(key, ""))
@@ -101,6 +109,35 @@ def song(song_id):
                 continue
 
     return flask.render_template("chorus.template", chorus = chorus, sections = sections)
+
+# ...
+
+@app.route("/song_search")
+def song_search():
+    global loaded_json
+    js = loaded_json[:]
+    c, n_max = -1, 200000
+    my_parts = set([x.lower() for x in request.args.get('search').split(" ") if x != ""])
+    songs_int_list = []
+    for jsi in js:
+        c += 1
+        parts = set() 
+        for k in jsi.keys():
+            text = rtf_to_text(jsi[k])
+            text = text.replace(",", " ").replace(";", " ")
+            text = text.replace(":", " ").replace("\n", " ")
+            for item in text.split(" "):
+                parts.add(item.lower())
+        if my_parts.intersection(parts)==my_parts:
+            #print(parts)
+            #print(my_parts)
+            songs_int_list.append(c)
+            n_max -= 1
+            if n_max==0: break
+    #print(songs_int_list)
+    return songs_n(songs_int_list)
+
+# ...
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App

@@ -1,10 +1,16 @@
 <!doctype html>
+
 <head>
-<title>SongProDB</title>
-<style>
-pre { font-family: Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace; }
-body { font-family: Verdana, Geneva, sans-serif; }
-</style>
+    <title>SongProDB</title>
+    <style>
+        pre {
+            font-family: Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace;
+        }
+
+        body {
+            font-family: Verdana, Geneva, sans-serif;
+        }
+    </style>
 </head>
 
 <body>
@@ -14,4 +20,10 @@ body { font-family: Verdana, Geneva, sans-serif; }
         <a href="{{ url.url }}">{{ url.text }}</a>
     </div>
     {% endfor %}
+    <h2>Song Search</h2>
+    <form action="/song_search">
+        <label for="search">Words In Song:</label>
+        <input type="text" id="search" name="search">
+        <input type="submit" value="Submit">
+    </form>
 </body>

@@ -4,6 +4,7 @@ from collections import namedtuple
 import os
 from striprtf.striprtf import rtf_to_text
 import json
+import sys
 
 # [START gae_python37_app]
 
@@ -27,6 +28,21 @@ def get_urls():
         ,
     )
 
+# ...
+
+def TokensFromJson(json_item):
+    parts = set() 
+    for k in json_item.keys():
+        text = rtf_to_text(json_item[k])
+        text = text.replace(",", " ").replace(";", " ")
+        text = text.replace(":", " ").replace("\n", " ")
+        text = text.replace(".", " ").replace("!", " ")
+        text = text.replace("\r", " ")
+        for item in text.split(" "):
+            parts.add(item.lower())
+    return parts
+
+# ...
 @app.route("/")
 def root():
     return flask.render_template("root.template", urls = get_urls())
@@ -76,6 +92,17 @@ def ExtractSequence(chorus, SEQUENCE_LOOKUP):
             result.append(seq)
     return result
 
+@app.route("/json/<song_id>")
+def json_root(song_id):
+    import pprint
+    global loaded_json
+    js = loaded_json[:]
+    js = sorted(js, key = lambda x: x.get("Title", ""))
+    js = js[int(song_id)]
+    jst = json.dumps(js, indent=2)
+    return flask.render_template("json.template", \
+        json_text = jst, tokens = pprint.pformat(TokensFromJson(js)))
+
 @app.route("/songs/<song_id>")
 def song(song_id):
     global loaded_json
@@ -116,21 +143,14 @@ def song(song_id):
 def song_search():
     global loaded_json
     js = loaded_json[:]
+    js = sorted(js, key = lambda x: x.get("Title", ""))
     c, n_max = -1, 200000
     my_parts = set([x.lower() for x in request.args.get('search').split(" ") if x != ""])
     songs_int_list = []
     for jsi in js:
         c += 1
-        parts = set() 
-        for k in jsi.keys():
-            text = rtf_to_text(jsi[k])
-            text = text.replace(",", " ").replace(";", " ")
-            text = text.replace(":", " ").replace("\n", " ")
-            for item in text.split(" "):
-                parts.add(item.lower())
+        parts = TokensFromJson(jsi)
         if my_parts.intersection(parts)==my_parts:
-            #print(parts)
-            #print(my_parts)
             songs_int_list.append(c)
             n_max -= 1
             if n_max==0: break
@@ -143,6 +163,9 @@ if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App
     # Engine, a webserver process such as Gunicorn will serve the app. This
     # can be configured by adding an `entrypoint` to app.yaml.
-    app.run(host='127.0.0.1', port=8080, debug=True)
+    if "--debug" in sys.argv[1:]:
+        app.run(host='127.0.0.1', port=8080, debug=True)
+    else:
+        app.run(host='127.0.0.1', port=8080, debug=False)
 
 # [END gae_python37_app]

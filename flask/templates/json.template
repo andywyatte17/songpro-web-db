@@ -1,0 +1,20 @@
+<!doctype html>
+<head>
+<title>Songs (Json)</title>
+<style>
+pre { font-family: Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace; }
+body { font-family: Verdana, Geneva, sans-serif; }
+</style>
+</head>
+
+<body>
+    <h1>Songs (Json)</h1>
+    <h2>Tokens</h2>
+    <div>
+    <pre>{{ tokens }}</pre>
+    </div>
+    <h2>Json></h2>
+    <div>
+    <pre>{{ json_text }}</pre>
+    </div>
+</body>

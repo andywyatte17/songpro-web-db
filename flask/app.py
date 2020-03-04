@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 import flask
 from collections import namedtuple
 import os
@@ -35,7 +35,7 @@ def maybe_rtf_to_text(maybe_rtf):
                 else rtf_to_text(maybe_rtf).lstrip("\n").rstrip("\n")
 
 def TokensFromJson(json_item):
-    parts = set() 
+    parts = set()
     for k in json_item.keys():
         text = maybe_rtf_to_text(json_item[k])
         text = text.replace(",", " ").replace(";", " ")
@@ -47,6 +47,7 @@ def TokensFromJson(json_item):
     return parts
 
 # ...
+
 @app.route("/")
 def root():
     return flask.render_template("root.template", urls = get_urls())
@@ -65,7 +66,7 @@ def songs_n(songs_int_list):
             continue
         songs.append( songs_tuple(name=x["Title"], index=n) )
     return flask.render_template("songs.template", songs = songs)
-    
+
 @app.route("/songs")
 def songs():
     global loaded_json
@@ -158,6 +159,10 @@ def song_search():
             if n_max==0: break
     #print(songs_int_list)
     return songs_n(songs_int_list)
+
+@app.route('/css/<path:path>')
+def send_css(path):
+    return send_from_directory('css', path)
 
 # ...
 

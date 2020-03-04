@@ -1,7 +1,9 @@
 <!doctype html>
 
-<head>
-    <title>SongProDB</title>
+<title>SongProDB</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--
+    <link rel="stylesheet" href="css/w3.css">
     <style>
         pre {
             font-family: Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace;
@@ -11,9 +13,9 @@
             font-family: Verdana, Geneva, sans-serif;
         }
     </style>
-</head>
-
+    -->
 <body>
+<div>
     <h1>SongProDB</h1>
     {% for url in urls %}
     <div>
@@ -26,4 +28,5 @@
         <input type="text" id="search" name="search">
         <input type="submit" value="Submit">
     </form>
+    </div>
 </body>

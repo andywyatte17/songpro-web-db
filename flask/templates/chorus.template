@@ -1,10 +1,6 @@
 <!doctype html>
-<head>
-<style>
-pre { font-family: Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace; }
-body { font-family: Verdana, Geneva, sans-serif; }
-</style>
 
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ chorus.Title }}</title>
 
 <body style="">
